@@ -1,0 +1,33 @@
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      179.22333333333333,
+      53.29666666666667
+    ]
+  },
+  "properties": {
+    "mmsi": 257565000,
+    "imo": 9191307,
+    "length": 244,
+    "width": 32,
+    "destination": "US TIW",
+    "eta": "11110730",
+    "draught": 10.6,
+    "heading": 0.0,
+    "sog": 16.0,
+    "cog": 74.0,
+    "rot": 0.0,
+    "ship_name": "TAMESIS",
+    "ship_type": "70",
+    "call_sign": "LAOL5",
+    "lng": 179.22333333333333,
+    "lat": 53.29666666666667,
+    "status": 0,
+    "time": "20211105132622",
+    "source": "S-AIS",
+    "time_static": "20211105115501",
+    "position": null
+  }
+}
