@@ -1,7 +1,7 @@
 import {exactEarthInstance} from '@/config/axiosConfig';
 import ExactEarthClient from '@/clients/exactEarthClient';
 import appConfig from '@/config/appConfig';
-import {FeatureCollection} from '@/clients/exactEarthClient';
+import {FeatureCollection} from '@/clients/model/responseTypes';
 
 describe('exactEarthClient 테스트', () => {
   let exactEarthClient: ExactEarthClient;
@@ -15,3 +15,4 @@ describe('exactEarthClient 테스트', () => {
     expect(res.features.length).toBeDefined();
   });
 });
+
