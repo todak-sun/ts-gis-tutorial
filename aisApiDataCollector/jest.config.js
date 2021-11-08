@@ -2,16 +2,18 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  // rootDir: '.',
-  testMatch: ['<rootDir>/test/**/*.(test).(js|jsx|ts|tsx)'],
+  testMatch: ['**/__test__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
   testPathIgnorePatterns: ['node_modules'],
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'ts', 'json'],
+  setupFiles: ['<rootDir>/dotevn.test.config.js'],
+  // forceExit: true,
+  // detectOpenHandles: true,
   moduleNameMapper: {
     '@/(.*)': '<rootDir>/src/$1',
   },
   verbose: true,
-  roots: ['<rootDir>/src'],
+  roots: ['<rootDir>'],
   transform: {
     '^.+\\.(ts|tsx)$': 'ts-jest',
   },

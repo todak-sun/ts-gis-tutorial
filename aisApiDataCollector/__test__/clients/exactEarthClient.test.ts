@@ -15,4 +15,3 @@ describe('exactEarthClient 테스트', () => {
     expect(res.features.length).toBeDefined();
   });
 });
-

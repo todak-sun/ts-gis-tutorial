@@ -11,7 +11,13 @@ class SpireClient {
   public async fetchAisInfos(limit: number, next: string | undefined = undefined): Promise<SpireResponseModel> {
     const requestParams: any = {ship_type: 'cargo', limit: limit};
     if (next) requestParams['next'] = next;
-    const response: AxiosResponse<SpireResponseModel, any> = await this.axios.get('', {params: requestParams});
+    let response: AxiosResponse<SpireResponseModel, any>;
+    try {
+      response = await this.axios.get('', {params: requestParams});
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
     return response.data;
   }
 }

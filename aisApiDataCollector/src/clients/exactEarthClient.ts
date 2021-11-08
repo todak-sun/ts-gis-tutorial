@@ -10,14 +10,14 @@ class ExactEarthClient {
     this.token = token;
   }
 
-  private async fetchEnrolledMMSIList(): Promise<String[]> {
-    const response: AxiosResponse<String[], any> = await this.axios.post('/voi', {token: this.token});
-    return response.data;
-  }
-
   public async fetchAisInfos(): Promise<FeatureCollection> {
     const mmsiList: String[] = await this.fetchEnrolledMMSIList();
     const response: AxiosResponse<FeatureCollection, any> = await this.axios.post('/lvi', {token: this.token, mmsi: mmsiList});
+    return response.data;
+  }
+
+  private async fetchEnrolledMMSIList(): Promise<String[]> {
+    const response: AxiosResponse<String[], any> = await this.axios.post('/voi', {token: this.token});
     return response.data;
   }
 }

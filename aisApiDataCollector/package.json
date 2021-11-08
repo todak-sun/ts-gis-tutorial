@@ -4,14 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --setupFiles dotenv/config --forceExit --detectOpenHandles",
+    "test": "jest --forceExit --detectOpenHandles",
     "clean": "rm -rf ./dist",
     "build": "npm run clean && cross-env NODE_ENV=production tsc --build",
-    "dev": "cross-env NODE_ENV=development DOTENV_CONFIG_PATH=./secrets/.env ts-node -r tsconfig-paths/register -r dotenv/config src/app.ts"
+    "dev:spire": "cross-env NODE_ENV=development DOTENV_CONFIG_PATH=./secrets/.env ts-node -r tsconfig-paths/register -r dotenv/config src/app.ts --job=spire",
+    "dev:exactearth": "cross-env NODE_ENV=development DOTENV_CONFIG_PATH=./secrets/.env ts-node -r tsconfig-paths/register -r dotenv/config src/app.ts --job=exactearth"
   },
   "dependencies": {
-    "winston": "3.3.3",
-    "axios": "0.24.0"
+    "amqplib": "0.8.0",
+    "axios": "0.24.0",
+    "winston": "3.3.3"
   },
   "devDependencies": {
     "typescript": "4.4.4",
@@ -20,6 +22,7 @@
     "jest": "27.3.1",
     "@types/jest": "27.0.2",
     "@types/winston": "2.4.4",
+    "@types/amqplib": "0.8.2",
     "dotenv": "10.0.0",
     "tsconfig-paths": "3.11.0",
     "cross-env": "7.0.3"
