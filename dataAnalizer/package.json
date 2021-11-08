@@ -1,0 +1,28 @@
+{
+  "name": "dataanalizer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev" : "cross-env NODE_ENV=development DOTENV_CONFIG_PATH=./.secrets/.env ts-node -r tsconfig-paths/register -r dotenv/config src/index.ts"
+  },
+  "dependencies": {
+    "amqplib": "0.8.0",
+    "winston": "3.3.3"
+  },
+  "devDependencies": {
+    "typescript": "4.4.4",
+    "ts-node": "10.4.0",
+    "ts-jest": "27.0.7",
+    "jest": "27.3.1",
+    "@types/jest": "27.0.2",
+    "@types/winston": "2.4.4",
+    "@types/amqplib": "0.8.2",
+    "dotenv": "10.0.0",
+    "tsconfig-paths": "3.11.0",
+    "cross-env": "7.0.3"
+  },
+  "author": "",
+  "license": "ISC"
+}

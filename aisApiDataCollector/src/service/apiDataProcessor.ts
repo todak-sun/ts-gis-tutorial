@@ -34,7 +34,7 @@ export class SpireDataProducer implements IApiDataProcessor<SpireResponseModel> 
     );
 
     data.data.forEach((d) => {
-      const target = {vendor: 'S', ...d};
+      const target = {_vendor: 'S', ...d};
       const json: string = JSON.stringify(target);
       const success = ch.publish(exchange, routingKey, Buffer.from(json), {
         contentType: 'application/json',
@@ -77,7 +77,7 @@ export class ExactEarthDataProducer implements IApiDataProcessor<FeatureCollecti
     );
 
     data.features.forEach((feature) => {
-      const target = {vendor: 'E', ...feature};
+      const target = {_vendor: 'E', ...feature};
       const json: string = JSON.stringify(target);
       const success = ch.publish(exchange, routingKey, Buffer.from(json), {
         contentType: 'application/json',

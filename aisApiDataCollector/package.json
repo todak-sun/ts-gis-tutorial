@@ -1,5 +1,5 @@
 {
-  "name": "aisapidatacollector",
+  "name": "ais-api-data-collector",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -7,8 +7,8 @@
     "test": "jest --forceExit --detectOpenHandles",
     "clean": "rm -rf ./dist",
     "build": "npm run clean && cross-env NODE_ENV=production tsc --build",
-    "dev:spire": "cross-env NODE_ENV=development DOTENV_CONFIG_PATH=./secrets/.env ts-node -r tsconfig-paths/register -r dotenv/config src/app.ts --job=spire",
-    "dev:exactearth": "cross-env NODE_ENV=development DOTENV_CONFIG_PATH=./secrets/.env ts-node -r tsconfig-paths/register -r dotenv/config src/app.ts --job=exactearth"
+    "dev:spire": "cross-env NODE_ENV=development DOTENV_CONFIG_PATH=./.secrets/.env ts-node -r tsconfig-paths/register -r dotenv/config src/index.ts --job=spire",
+    "dev:exactearth": "cross-env NODE_ENV=development DOTENV_CONFIG_PATH=./.secrets/.env ts-node -r tsconfig-paths/register -r dotenv/config src/index.ts --job=exactearth"
   },
   "dependencies": {
     "amqplib": "0.8.0",
@@ -27,6 +27,6 @@
     "tsconfig-paths": "3.11.0",
     "cross-env": "7.0.3"
   },
-  "author": "",
+  "author": "todak-sun",
   "license": "ISC"
 }

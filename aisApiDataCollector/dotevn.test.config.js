@@ -1,1 +1,1 @@
-require('dotenv').config({path: './secrets/.env'});
+require('dotenv').config({path: './.secrets/.env'});
