@@ -1,7 +1,14 @@
+import {Feature, FeatureCollection, SpireData, SpireResponseModel} from '@/clients/model/responseTypes';
 import logger from '@/config/logger';
 import {EXCHANGE, QUEUE, ROUTING_KEY} from '@/config/rabbitMQ';
 import {Channel, Connection} from 'amqplib';
-import {FeatureCollection, SpireResponseModel} from '../clients/model/responseTypes';
+
+type Vendor = 'S' | 'E';
+
+interface AisMessage<T> {
+  _vendor: Vendor;
+  data: T;
+}
 
 export interface IApiDataProcessor<T> {
   process(data: T): void;
@@ -34,7 +41,7 @@ export class SpireDataProducer implements IApiDataProcessor<SpireResponseModel> 
     );
 
     data.data.forEach((d) => {
-      const target = {_vendor: 'S', ...d};
+      const target: AisMessage<SpireData> = {_vendor: 'S', data: d};
       const json: string = JSON.stringify(target);
       const success = ch.publish(exchange, routingKey, Buffer.from(json), {
         contentType: 'application/json',
@@ -77,7 +84,7 @@ export class ExactEarthDataProducer implements IApiDataProcessor<FeatureCollecti
     );
 
     data.features.forEach((feature) => {
-      const target = {_vendor: 'E', ...feature};
+      const target: AisMessage<Feature> = {_vendor: 'E', data: feature};
       const json: string = JSON.stringify(target);
       const success = ch.publish(exchange, routingKey, Buffer.from(json), {
         contentType: 'application/json',

@@ -1,0 +1,5 @@
+{
+  "type": "postgres",
+  "logging": true,
+  "entities": ["src/entity/*.ts"]
+}

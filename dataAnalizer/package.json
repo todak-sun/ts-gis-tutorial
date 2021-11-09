@@ -5,11 +5,14 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev" : "cross-env NODE_ENV=development DOTENV_CONFIG_PATH=./.secrets/.env ts-node -r tsconfig-paths/register -r dotenv/config src/index.ts"
+    "dev": "cross-env NODE_ENV=development DOTENV_CONFIG_PATH=./.secrets/.env ts-node -r tsconfig-paths/register -r dotenv/config src/index.ts"
   },
   "dependencies": {
     "amqplib": "0.8.0",
-    "winston": "3.3.3"
+    "winston": "3.3.3",
+    "pg": "8.7.1",
+    "typeorm": "0.2.38",
+    "reflect-metadata": "0.1.13"
   },
   "devDependencies": {
     "typescript": "4.4.4",
@@ -19,6 +22,7 @@
     "@types/jest": "27.0.2",
     "@types/winston": "2.4.4",
     "@types/amqplib": "0.8.2",
+    "@types/pg": "8.6.1",
     "dotenv": "10.0.0",
     "tsconfig-paths": "3.11.0",
     "cross-env": "7.0.3"

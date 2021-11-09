@@ -1,68 +1,64 @@
-import amqp, {Channel, Connection, ConsumeMessage} from 'amqplib';
-import logger from './config/logger';
-import VesselReport from './domain/VesselReport';
-import {Feature, SpireData} from './model/responseTypes';
-
-export type SpireMessage = {_vendor: 'S'} & SpireData;
-export type ExactEarthMessage = {_vendor: 'E'} & Feature;
-
-type Vessel = {
-  mmsi: string;
-  callSign: string;
-  imo: string;
-  shipType: string;
-  shipName: string;
-};
-
-type Report = {
-  position: number[];
-  updatedAt: Date;
-};
-
-type VesselReport = {
-  vessel: Vessel;
-  report: Report;
-};
+import appConfig from '@/config/appConfig';
+import logger from '@/config/logger';
+import VesselReport, {AisMessage} from '@/domain/VesselReport';
+import Vessel from '@/entity/Vessel';
+import VesselRepository from '@/repository/VesselRepository';
+import amqp, {Channel, Connection as RabbitMQConnection, ConsumeMessage} from 'amqplib';
+import {Connection as DBConnection, createConnection} from 'typeorm';
 
 (async () => {
-  const conn: Connection = await amqp.connect({
-    hostname: process.env.INFRA_RABBIT_MQ_AIS_DATA_HOST,
-    protocol: process.env.INFRA_RABBIT_MQ_AIS_DATA_PROTOCOL,
-    port: parseInt(process.env.INFRA_RABBIT_MQ_AIS_DATA_PORT + ''),
+  const rabbitConn: RabbitMQConnection = await amqp.connect({
+    hostname: appConfig.infra.rabbitMQ.hostname,
+    protocol: appConfig.infra.rabbitMQ.protocol,
+    port: appConfig.infra.rabbitMQ.port,
   });
 
-  const ch: Channel = await conn.createChannel();
+  const pgConn: DBConnection = await createConnection({
+    type: 'postgres',
+    host: appConfig.infra.postgresql.hostname,
+    port: appConfig.infra.postgresql.port,
+    username: appConfig.infra.postgresql.username,
+    password: appConfig.infra.postgresql.password,
+    database: appConfig.infra.postgresql.database,
+    entities: [Vessel],
+  });
+
+  const vesselRepository = pgConn.getCustomRepository(VesselRepository);
+
+  const ch: Channel = await rabbitConn.createChannel();
   await ch.assertQueue('ais_data.timescaledb', {durable: true});
   await ch.prefetch(1, true);
   await ch.consume('ais_data.timescaledb', async (message: ConsumeMessage | null) => {
     if (!message) return;
+    //TODO: 레디스에 배 정보 캐싱하기.
+    //TODO: 위치 정보 쌓기
+    const aisMessage: AisMessage<any> = JSON.parse(message.content.toString('utf-8'));
+    const vesselReport: VesselReport = new VesselReport(aisMessage);
 
-    const content = JSON.parse(message.content.toString('utf-8'));
-    if (content['_vendor'] === 'S') {
-      const data: SpireMessage = content;
-      const vesselReport: VesselReport = {
-        vessel: {
-          mmsi: data.mmsi,
-          callSign: data.call_sign,
-          imo: data.imo,
-          shipType: data.ship_type,
-          shipName: data.name,
-        },
-        report: {
-          position: data.last_known_position.geometry.coordinates,
-          updatedAt: new Date(data.last_known_position.timestamp),
-        },
-      };
-
-      logger.debug(`S : ${JSON.stringify(vesselReport)}`);
-    } else if (content['_vendor'] === 'E') {
-      const data: ExactEarthMessage = content;
-      VesselReport.from(data);
-      logger.debug(`E : ${JSON.stringify(vesselReport)}, ${data.properties.time}`);
+    const existVessel = await vesselRepository.findByMMSI(vesselReport.getMMSI());
+    if (existVessel) {
+      existVessel.callSign = vesselReport.getCallSign();
+      existVessel.imo = vesselReport.getIMO();
+      existVessel.shipName = vesselReport.getShipName();
+      existVessel.shipType = vesselReport.getShipType();
+      existVessel.isActive = vesselReport.isActive();
+      existVessel.updatedDateTime = new Date();
+      const updatedVessel = await vesselRepository.save(existVessel);
+      logger.debug(`updated vessle : ${updatedVessel.id}`);
+    } else {
+      const vessel = new Vessel();
+      vessel.mmsi = vesselReport.getMMSI();
+      vessel.callSign = vesselReport.getCallSign();
+      vessel.imo = vesselReport.getIMO();
+      vessel.shipName = vesselReport.getShipName();
+      vessel.shipType = vesselReport.getShipType();
+      vessel.isActive = vesselReport.isActive();
+      vessel.createdDateTime = new Date();
+      vessel.updatedDateTime = new Date();
+      const newVessel = await vesselRepository.save(vessel);
     }
 
+    // logger.debug(`vesselReport : ${vesselReport.toString()}`);
     await ch.ack(message);
   });
 })();
-
-
