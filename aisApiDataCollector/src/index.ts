@@ -1,13 +1,16 @@
 import ExactEarthClient from '@/clients/exactEarthClient';
-import {FeatureCollection, SpireResponseModel} from '@/clients/model/responseTypes';
 import SpireClient from '@/clients/spireClient';
 import appConfig from '@/config/appConfig';
-import {exactEarthInstance, spireInstance} from '@/config/axiosConfig';
+import { exactEarthInstance, spireInstance } from '@/config/axiosConfig';
 import logger from '@/config/logger';
-import {getConnection} from '@/config/rabbitMQ';
-import {ExactEarthApiCaller, SpireApiCaller} from '@/service/apiCaller';
+import { getConnection } from '@/config/rabbitMQ';
+import { ExactEarthApiCaller, SpireApiCaller } from '@/service/apiCaller';
 import ApiCollector from '@/service/apiCollector';
-import {ExactEarthDataProducer, SpireDataProducer} from '@/service/apiDataProcessor';
+import { ExactEarthDataProducer, SpireDataProducer } from '@/service/apiDataProcessor';
+import { FeatureCollection, SpireResponseModel } from '@core/responseTypes';
+import {config} from 'dotenv';
+
+config({path: '../.secrets/.env'});
 
 logger.info('Application Start');
 logger.info(`NODE_ENV : ${process.env.NODE_ENV}`);

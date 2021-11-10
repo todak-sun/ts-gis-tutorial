@@ -1,7 +1,7 @@
-import {Feature, FeatureCollection, SpireData, SpireResponseModel} from '@/clients/model/responseTypes';
 import logger from '@/config/logger';
-import {EXCHANGE, QUEUE, ROUTING_KEY} from '@/config/rabbitMQ';
-import {Channel, Connection} from 'amqplib';
+import { EXCHANGE, QUEUE, ROUTING_KEY } from '@/config/rabbitMQ';
+import { Feature, FeatureCollection, SpireData, SpireResponseModel } from '@core/responseTypes';
+import { Channel, Connection } from 'amqplib';
 
 type Vendor = 'S' | 'E';
 

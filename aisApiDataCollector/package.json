@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest --forceExit --detectOpenHandles",
     "clean": "rm -rf ./dist",
-    "build": "npm run clean && cross-env NODE_ENV=production tsc --build",
+    "build": "cross-env NODE_ENV=production tsc --build",
     "dev:spire": "cross-env NODE_ENV=development DOTENV_CONFIG_PATH=./.secrets/.env ts-node -r tsconfig-paths/register -r dotenv/config src/index.ts --job=spire",
     "dev:exactearth": "cross-env NODE_ENV=development DOTENV_CONFIG_PATH=./.secrets/.env ts-node -r tsconfig-paths/register -r dotenv/config src/index.ts --job=exactearth"
   },

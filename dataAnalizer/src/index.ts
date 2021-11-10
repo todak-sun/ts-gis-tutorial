@@ -3,11 +3,11 @@ import logger from '@/config/logger';
 import VesselReport, {AisMessage} from '@/domain/VesselReport';
 import Vessel from '@/entity/Vessel';
 import VesselRepository from '@/repository/VesselRepository';
-import amqp, {Channel, Connection as RabbitMQConnection, ConsumeMessage} from 'amqplib';
+import {connect as amqpConnect, Channel, Connection as RabbitMQConnection, ConsumeMessage} from 'amqplib';
 import {Connection as DBConnection, createConnection} from 'typeorm';
 
 (async () => {
-  const rabbitConn: RabbitMQConnection = await amqp.connect({
+  const rabbitConn: RabbitMQConnection = await amqpConnect({
     hostname: appConfig.infra.rabbitMQ.hostname,
     protocol: appConfig.infra.rabbitMQ.protocol,
     port: appConfig.infra.rabbitMQ.port,

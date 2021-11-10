@@ -1,5 +1,5 @@
-import {IApiCaller} from './apiCaller';
-import {IApiDataProcessor} from './apiDataProcessor';
+import {IApiCaller} from '@/service/apiCaller';
+import {IApiDataProcessor} from '@/service/apiDataProcessor';
 
 export default class ApiCollector<T> {
   private caller: IApiCaller<T>;

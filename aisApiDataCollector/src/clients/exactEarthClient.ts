@@ -1,5 +1,5 @@
 import {AxiosInstance, AxiosResponse} from 'axios';
-import {FeatureCollection} from '@/clients/model/responseTypes';
+import {FeatureCollection} from '@core/responseTypes';
 
 class ExactEarthClient {
   private axios: AxiosInstance;

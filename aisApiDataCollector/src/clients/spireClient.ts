@@ -1,5 +1,5 @@
 import {AxiosInstance, AxiosResponse} from 'axios';
-import {SpireResponseModel} from '@/clients/model/responseTypes';
+import {SpireResponseModel} from '@core/responseTypes';
 
 class SpireClient {
   private axios: AxiosInstance;

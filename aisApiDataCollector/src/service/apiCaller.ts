@@ -1,8 +1,8 @@
 import ExactEarthClient from '@/clients/exactEarthClient';
-import {FeatureCollection, SpireResponseModel} from '@/clients/model/responseTypes';
 import SpireClient from '@/clients/spireClient';
 import logger from '@/config/logger';
-import {IApiDataProcessor} from '@/service/apiDataProcessor';
+import { IApiDataProcessor } from '@/service/apiDataProcessor';
+import { FeatureCollection, SpireResponseModel } from '@core/responseTypes';
 
 export interface IApiCaller<RES> {
   call(processor: IApiDataProcessor<RES>, next: string | undefined): void;

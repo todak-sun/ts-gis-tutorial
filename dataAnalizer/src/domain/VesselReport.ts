@@ -1,4 +1,4 @@
-import {Feature, SpireData} from '@/model/responseTypes';
+import { Feature, SpireData } from '@core/responseTypes';
 
 export type Vendor = 'S' | 'E';
 

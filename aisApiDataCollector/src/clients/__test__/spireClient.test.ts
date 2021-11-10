@@ -1,7 +1,7 @@
 import {spireInstance} from '@/config/axiosConfig';
 import SpireClient from '@/clients/spireClient';
 
-import {SpireResponseModel} from '@/clients/model/responseTypes';
+import {SpireResponseModel} from '@core/responseTypes';
 
 describe('Spire 데이터를 가지고오는 Client 테스트', () => {
   let spireClient: SpireClient;
