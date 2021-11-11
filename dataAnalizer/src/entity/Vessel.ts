@@ -20,8 +20,8 @@ export default class Vessel {
   @Column({name: 'ship_type'})
   shipType!: string;
 
-  @Column({name: 'active', nullable: false})
-  isActive!: boolean;
+  @Column({name: 'renewal_datetime', nullable: false})
+  renewalDateTime!: Date;
 
   @Column({name: 'created_datetime', nullable: false})
   createdDateTime!: Date;

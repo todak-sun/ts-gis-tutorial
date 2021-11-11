@@ -37,7 +37,7 @@ class VesselReport {
         };
         this.report = {
           position: spireData.last_known_position.geometry.coordinates,
-          updatedAt: new Date(spireData.last_known_position.timestamp),
+          updatedAt: new Date(spireData.static_updated_at),
         };
         break;
       case 'E':
@@ -51,7 +51,7 @@ class VesselReport {
         };
         this.report = {
           position: feature.geometry.coordinates,
-          updatedAt: convertToDate(feature.properties.time),
+          updatedAt: convertToDate(feature.properties.time_static),
         };
         break;
       default:

@@ -13,6 +13,8 @@
     "declarationMap": true,
   },
   "references": [
-    {"path": "./core"}
-  ]
+    {
+      "path": "./core"
+    }
+  ],
 }

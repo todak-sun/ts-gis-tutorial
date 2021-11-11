@@ -6,7 +6,7 @@
     "baseUrl": ".",
     "rootDirs": [
       "src",
-      "test"
+      "../core"
     ],
     "outDir": "dist",
     "paths": {
@@ -19,7 +19,8 @@
     }
   },
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "../core/src/**/*.ts"
   ],
   "exclude": [
     "node_modules"
