@@ -1,8 +1,8 @@
 import appConfig from '@/config/appConfig';
 import logger from '@/config/logger';
-import VesselReport, {AisMessage} from '@/domain/VesselReport';
-import Vessel from '@/entity/Vessel';
-import VesselRepository from '@/repository/VesselRepository';
+import VesselReport, {AisMessage} from '@/vessel/VesselReport';
+import Vessel from '@/vessel/Vessel';
+import VesselRepository from '@/vessel/VesselRepository';
 import {connect as amqpConnect, Channel, Connection as RabbitMQConnection, ConsumeMessage} from 'amqplib';
 import {Connection as DBConnection, createConnection} from 'typeorm';
 
@@ -35,30 +35,17 @@ import {Connection as DBConnection, createConnection} from 'typeorm';
     const aisMessage: AisMessage<any> = JSON.parse(message.content.toString('utf-8'));
     const vesselReport: VesselReport = new VesselReport(aisMessage);
 
-    const existVessel = await vesselRepository.findByMMSI(vesselReport.getMMSI());
+    const existVessel: Vessel | undefined = await vesselRepository.findByMMSI(vesselReport.getMMSI());
     if (existVessel) {
-      existVessel.callSign = vesselReport.getCallSign();
-      existVessel.imo = vesselReport.getIMO();
-      existVessel.shipName = vesselReport.getShipName();
-      existVessel.shipType = vesselReport.getShipType();
-      existVessel.isActive = vesselReport.isActive();
-      existVessel.updatedDateTime = new Date();
-      const updatedVessel = await vesselRepository.save(existVessel);
-      logger.debug(`updated vessle : ${updatedVessel.id}`);
+      if (!existVessel.equalsWith(vesselReport)) {
+        //TODO: 선박 정보가 변경되었으므로, 알림 포인트
+        existVessel.updateWith(vesselReport);
+        await vesselRepository.save(existVessel);
+      }
     } else {
-      const vessel = new Vessel();
-      vessel.mmsi = vesselReport.getMMSI();
-      vessel.callSign = vesselReport.getCallSign();
-      vessel.imo = vesselReport.getIMO();
-      vessel.shipName = vesselReport.getShipName();
-      vessel.shipType = vesselReport.getShipType();
-      vessel.isActive = vesselReport.isActive();
-      vessel.createdDateTime = new Date();
-      vessel.updatedDateTime = new Date();
+      const vessel = Vessel.createWith(vesselReport);
       const newVessel = await vesselRepository.save(vessel);
     }
-
-    // logger.debug(`vesselReport : ${vesselReport.toString()}`);
     await ch.ack(message);
   });
 })();

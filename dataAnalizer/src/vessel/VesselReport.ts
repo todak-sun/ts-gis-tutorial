@@ -79,10 +79,8 @@ class VesselReport {
     return this.vessel.shipName;
   }
 
-  public isActive(): boolean {
-    const now = new Date();
-    now.setMonth(now.getMonth() - 1);
-    return this.report.updatedAt.getTime() > now.getTime();
+  public getUpdatedAt(): Date {
+    return this.report.updatedAt;
   }
 
   public toString(): string {
