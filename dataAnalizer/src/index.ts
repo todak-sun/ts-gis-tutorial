@@ -1,18 +1,14 @@
 import appConfig from '@/config/appConfig';
-import logger from '@/config/logger';
-import VesselReport, {AisMessage} from '@/vessel/VesselReport';
-import Vessel from '@/vessel/Vessel';
-import VesselRepository from '@/vessel/VesselRepository';
-import {connect as amqpConnect, Channel, Connection as RabbitMQConnection, ConsumeMessage} from 'amqplib';
-import {Connection as DBConnection, createConnection} from 'typeorm';
+import rabbitMQConnection from '@/config/rabbitMQConfig';
+import Vessel from '@/vessel/vessel';
+import VesselReport, { AisMessage } from '@/vessel/vesselReport';
+import VesselRepository from '@/vessel/vesselRepository';
+import { Channel, Connection as RabbitMQConnection, ConsumeMessage } from 'amqplib';
+import { Connection as DBConnection, createConnection } from 'typeorm';
 
 (async () => {
-  const rabbitConn: RabbitMQConnection = await amqpConnect({
-    hostname: appConfig.infra.rabbitMQ.hostname,
-    protocol: appConfig.infra.rabbitMQ.protocol,
-    port: appConfig.infra.rabbitMQ.port,
-  });
 
+  const rabbitConn: RabbitMQConnection = await rabbitMQConnection()
   const pgConn: DBConnection = await createConnection({
     type: 'postgres',
     host: appConfig.infra.postgresql.hostname,

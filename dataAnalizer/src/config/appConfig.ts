@@ -12,6 +12,12 @@ const appConfig = {
       username: process.env.DATABASE_PG_USERNAME,
       database: process.env.DATABASE_PG_DATABASE_NAME,
     },
+    mongodb: {
+      hostname: process.env.MONGODB_HOST,
+      port: parseInt(process.env.MONGODB_PORT + ''),
+      username: process.env.MONGODB_USERNAME,
+      password: process.env.MONGODB_PASSWORD
+    }
   },
 };
 

@@ -1,5 +1,5 @@
 import {Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
-import VesselReport from '@/vessel/VesselReport';
+import VesselReport from '@/vessel/vesselReport';
 
 @Entity({name: 'vessel'})
 export default class Vessel {
@@ -52,8 +52,7 @@ export default class Vessel {
       this.callSign === vesselReport.getCallSign() &&
       this.imo === vesselReport.getIMO() &&
       this.shipName === vesselReport.getShipName() &&
-      this.shipType === vesselReport.getShipType() &&
-      this.renewalDateTime.getTime() !== vesselReport.getUpdatedAt().getTime()
+      this.shipType === vesselReport.getShipType()
     );
   }
 
