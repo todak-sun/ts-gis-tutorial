@@ -1,5 +1,4 @@
-import appConfig from '@/config/appConfig';
-import { Document, Schema, connect, model, Model } from 'mongoose';
+import { Document, Model, model, Schema } from 'mongoose';
 
 interface IMMSIMetaHistory {
   mmsi: string;
@@ -14,54 +13,27 @@ interface IMMSIMetaHistoryModel extends Model<IMMSIMetaHistoryDocument> {
 
 }
 
-interface IVesselMeta {
+export interface IVesselMeta {
   callSign?:string;
   imo?: string;
   shipName?: string;
   shipType?: string;
+  changedAt?: Date;
 }
 
-const IVesselMetaSchema: Schema<IVesselMeta> = new Schema({
+export const IVesselMetaSchema: Schema<IVesselMeta> = new Schema({
   callSign: {type: String, required: false},
   imo: {type: String, required: false},
   shipName: {type: String, required: false},
-  shipType: {type: String, required: false}
+  shipType: {type: String, required: false},
+  changedAt: {type: Date, required: true}
 });
 
-
 const MMSIMetaHistorySchema: Schema<IMMSIMetaHistoryDocument> = new Schema({
-  mmsi: {type: String, required: true, _id: true},
+  mmsi: {type: String, required: true, unique: true},
   histories: [IVesselMetaSchema]
 })
 
-const MMSIMetaHistoryModel = model<IMMSIMetaHistoryDocument, IMMSIMetaHistoryModel>('MMSIMetaHistory', MMSIMetaHistorySchema);
+export const MMSIMetaHistoryModel = model<IMMSIMetaHistoryDocument, IMMSIMetaHistoryModel>('MMSIMetaHistory', MMSIMetaHistorySchema);
 
-export async function run(): Promise<void> {
-  await connect(`mongodb://${appConfig.infra.mongodb.hostname}:${appConfig.infra.mongodb.port}/admin`, {
-    user: appConfig.infra.mongodb.username,
-    pass: appConfig.infra.mongodb.password
-  });
-
-  const doc = new MMSIMetaHistoryModel({
-    mmsi: '1234',
-    histories: [{
-      callSign: '123',
-      imo: '123',
-      shipName: '123',
-      shipType: '123'
-    }]
-  });
-
-  await doc.save();
-
-}
-
-
-
-
-// const schema = new Schema<IVesselMetaHistory>({
-
-// });
-
-// const VesselMetaHistoryModel = model<IVesselMetaHistory>('VesselMetaHistory', schema);
 

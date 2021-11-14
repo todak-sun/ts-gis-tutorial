@@ -29,9 +29,9 @@ class VesselReport {
       case 'S':
         const spireData: SpireData = aisMessage.data;
         this.vessel = {
-          mmsi: spireData.mmsi,
+          mmsi: `${spireData.mmsi}`,
           callSign: spireData.call_sign,
-          imo: spireData.imo,
+          imo: `${spireData.imo}`,
           shipType: spireData.ship_type,
           shipName: spireData.name,
         };
@@ -43,9 +43,9 @@ class VesselReport {
       case 'E':
         const feature: Feature = aisMessage.data;
         this.vessel = {
-          mmsi: feature.properties.mmsi,
+          mmsi: `${feature.properties.mmsi}`,
           callSign: feature.properties.call_sign,
-          imo: feature.properties.imo,
+          imo: `${feature.properties.imo}`,
           shipType: feature.properties.ship_type,
           shipName: feature.properties.ship_name,
         };

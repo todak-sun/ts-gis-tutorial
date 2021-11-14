@@ -4,9 +4,17 @@ import Vessel from '@/vessel/vessel';
 import VesselReport, { AisMessage } from '@/vessel/vesselReport';
 import VesselRepository from '@/vessel/vesselRepository';
 import { Channel, Connection as RabbitMQConnection, ConsumeMessage } from 'amqplib';
+import { connect as mongodbConnect } from 'mongoose';
 import { Connection as DBConnection, createConnection } from 'typeorm';
+import logger from './config/logger';
+import { IVesselMeta, MMSIMetaHistoryModel } from './vessel/vesselMetaHistoryDoc';
 
 (async () => {
+
+  await mongodbConnect(`mongodb://${appConfig.infra.mongodb.hostname}:${appConfig.infra.mongodb.port}/admin`, {
+    user: appConfig.infra.mongodb.username,
+    pass: appConfig.infra.mongodb.password
+  });
 
   const rabbitConn: RabbitMQConnection = await rabbitMQConnection()
   const pgConn: DBConnection = await createConnection({
@@ -32,16 +40,52 @@ import { Connection as DBConnection, createConnection } from 'typeorm';
     const vesselReport: VesselReport = new VesselReport(aisMessage);
 
     const existVessel: Vessel | undefined = await vesselRepository.findByMMSI(vesselReport.getMMSI());
+    
+    const vesselMeta: IVesselMeta =  {
+      callSign : vesselReport.getCallSign(),
+      imo : vesselReport.getIMO(),
+      shipName: vesselReport.getShipName(),
+      shipType: vesselReport.getShipType(),
+      changedAt : new Date(),
+    }
+  
     if (existVessel) {
       if (!existVessel.equalsWith(vesselReport)) {
-        //TODO: 선박 정보가 변경되었으므로, 알림 포인트
+        logger.debug(`[${vesselReport.getMMSI()}] 선박의 정보가 변경됨`)
+        
+        
+        // RDB
         existVessel.updateWith(vesselReport);
         await vesselRepository.save(existVessel);
+        logger.debug(`[${vesselReport.getMMSI()}] 저장된 정보 RDB 업데이트`)
+
+        // MongoDB
+        const mmsiMetaHistory = await MMSIMetaHistoryModel.findOne({mmsi: vesselReport.getMMSI()});
+        if(!mmsiMetaHistory) {
+          await MMSIMetaHistoryModel.create({mmsi : vesselReport.getMMSI(), histories : [vesselMeta]});
+        } else {
+          mmsiMetaHistory.histories.push(vesselMeta);
+          mmsiMetaHistory.save();
+        }
+        logger.debug(`[${vesselReport.getMMSI()}] 변경 내역 MONGO DB에 추가`);
       }
     } else {
+      logger.debug(`[${vesselReport.getMMSI()}] 신규 선박이 추가됨`)
+
+      // RDB
       const vessel = Vessel.createWith(vesselReport);
       const newVessel = await vesselRepository.save(vessel);
+      logger.debug(`[${vesselReport.getMMSI()}] 신규 선박 RDB 반영`)
+
+      // MongoDB
+      const mmsiMetaHistory = await MMSIMetaHistoryModel.findOne({mmsi: vesselReport.getMMSI()});
+      if(!mmsiMetaHistory) {
+        await MMSIMetaHistoryModel.create({mmsi : vesselReport.getMMSI(), histories : [vesselMeta]});
+      }
+      logger.debug(`[${vesselReport.getMMSI()}] 신규 선박 MONGO DB 반영`)
     }
+
+  
     await ch.ack(message);
   });
 })();
