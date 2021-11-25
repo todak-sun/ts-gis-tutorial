@@ -3,6 +3,7 @@ import { Document, Model, model, Schema } from 'mongoose';
 interface IMMSIMetaHistory {
   mmsi: string;
   histories: IVesselMeta[];
+  historiesLength : number;
 }
 
 interface IMMSIMetaHistoryDocument extends IMMSIMetaHistory, Document {
@@ -31,7 +32,8 @@ export const IVesselMetaSchema: Schema<IVesselMeta> = new Schema({
 
 const MMSIMetaHistorySchema: Schema<IMMSIMetaHistoryDocument> = new Schema({
   mmsi: {type: String, required: true, unique: true},
-  histories: [IVesselMetaSchema]
+  histories: [IVesselMetaSchema],
+  historiesLength: {type: Number, required: true}
 })
 
 export const MMSIMetaHistoryModel = model<IMMSIMetaHistoryDocument, IMMSIMetaHistoryModel>('MMSIMetaHistory', MMSIMetaHistorySchema);

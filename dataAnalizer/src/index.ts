@@ -62,9 +62,10 @@ import { IVesselMeta, MMSIMetaHistoryModel } from './vessel/vesselMetaHistoryDoc
         // MongoDB
         const mmsiMetaHistory = await MMSIMetaHistoryModel.findOne({mmsi: vesselReport.getMMSI()});
         if(!mmsiMetaHistory) {
-          await MMSIMetaHistoryModel.create({mmsi : vesselReport.getMMSI(), histories : [vesselMeta]});
+          await MMSIMetaHistoryModel.create({mmsi : vesselReport.getMMSI(), histories : [vesselMeta], historiesLength: 1});
         } else {
           mmsiMetaHistory.histories.push(vesselMeta);
+          mmsiMetaHistory.historiesLength = mmsiMetaHistory.histories.length
           mmsiMetaHistory.save();
         }
         logger.debug(`[${vesselReport.getMMSI()}] 변경 내역 MONGO DB에 추가`);
@@ -80,7 +81,7 @@ import { IVesselMeta, MMSIMetaHistoryModel } from './vessel/vesselMetaHistoryDoc
       // MongoDB
       const mmsiMetaHistory = await MMSIMetaHistoryModel.findOne({mmsi: vesselReport.getMMSI()});
       if(!mmsiMetaHistory) {
-        await MMSIMetaHistoryModel.create({mmsi : vesselReport.getMMSI(), histories : [vesselMeta]});
+        await MMSIMetaHistoryModel.create({mmsi : vesselReport.getMMSI(), histories : [vesselMeta], historiesLength: 1});
       }
       logger.debug(`[${vesselReport.getMMSI()}] 신규 선박 MONGO DB 반영`)
     }
